@@ -1,0 +1,51 @@
+name: Prepare Oracle Cloud Infrastructure Registry
+description: Find or create an OCIR repository and log in to its registry
+branding:
+  icon: box
+  color: orange
+inputs:
+  compartment:
+    description: OCID of the repository compartment
+    required: true
+  name:
+    description: Repository name
+    required: true
+  auth_token:
+    description: OCI user auth token
+    required: true
+outputs:
+  repo_path:
+    description: Full repository path
+    value: ${{ steps.repository.outputs.repo_path }}
+  repo_ocid:
+    description: Repository OCID
+    value: ${{ steps.repository.outputs.repo_ocid }}
+  ocir_endpoint:
+    description: Registry endpoint
+    value: ${{ steps.repository.outputs.ocir_endpoint }}
+  ocir_username:
+    description: Registry username
+    value: ${{ steps.repository.outputs.ocir_username }}
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@v7
+      with:
+        enable-cache: true
+        working-directory: ${{ github.action_path }}
+        cache-dependency-glob: action.yml
+    - shell: bash
+      run: |
+        uv tool install oci-cli==3.96.2
+        echo "$(uv tool dir --bin)" >> "$GITHUB_PATH"
+    - id: repository
+      shell: bash
+      env:
+        INPUT_COMPARTMENT: ${{ inputs.compartment }}
+        INPUT_NAME: ${{ inputs.name }}
+      run: python3 "$GITHUB_ACTION_PATH/ocir.py"
+    - uses: docker/login-action@v3
+      with:
+        registry: ${{ steps.repository.outputs.ocir_endpoint }}
+        username: ${{ steps.repository.outputs.ocir_username }}
+        password: ${{ inputs.auth_token }}

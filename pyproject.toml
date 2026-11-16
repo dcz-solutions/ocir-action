@@ -1,0 +1,5 @@
+[dependency-groups]
+dev = ["pytest>=8,<10", "pytest-cov>=6,<8", "ruff>=0.12,<1"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=ocir --cov-branch --cov-report=term-missing --cov-fail-under=90"

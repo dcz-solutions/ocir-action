@@ -1,0 +1,11 @@
+This project combines functionality from Oracle's login-ocir and
+get-ocir-repository actions:
+
+https://github.com/oracle-actions/login-ocir
+https://github.com/oracle-actions/get-ocir-repository
+
+Upstream copyright notice:
+Copyright (c) 2021, 2024 Oracle and/or its affiliates.
+
+Upstream material is licensed under the Universal Permissive License (UPL),
+Version 1.0: https://oss.oracle.com/licenses/upl/
